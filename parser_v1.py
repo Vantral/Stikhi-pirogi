@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+import time
+
 """
 pages = []
 read = ' '
@@ -13,7 +15,9 @@ output_file = open(output_file_path, 'w', encoding="utf-8")
 
 print("Loading started")
 
-for page in range(1, 1601):
+start = time.time()
+
+for page in range(1, 601):
     URL = 'https://poetory.ru/pir/rating/'
     URL += str(page)
     response = requests.get(URL)
@@ -28,3 +32,5 @@ for page in range(1, 1601):
         output_file.write(stikh + '\n\n')
     print(stikh)
     print("Done")
+
+print(time.time() - start)
