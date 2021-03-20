@@ -1,10 +1,28 @@
 import json
+from russtress import Accent
 
 collocations = {}
+stresses = {}
 stikhi = []
+vowels = "уеыаоэяиюё"
+
+accent = Accent()
 
 with open("pirogi.txt", 'r', encoding="utf-8") as f:
     stikhi = f.read().split('\n\n')
+
+def syllabs(word):
+  stressed_word = accent.put_stress(word)
+  res = ''
+  for letter in stressed_word:
+    if letter == "'":
+      res += "'"
+    elif letter in vowels:
+      res += "V"
+    else:
+      continue
+    
+  return res
 
 for item in stikhi:
     item = item.replace('\n', ' ').split()
@@ -19,7 +37,17 @@ for item in stikhi:
         else:
             collocations[word][next_word] = 1
 
-#print(collocations)
+length = len(collocations)
+
+for word in collocations:
+  stresses[word] = syllabs(word)
+  length -= 1
+  print(length)
+
+
+with open("syllabs.json", "w", encoding="utf-8") as write_file:
+    json.dump(stresses, write_file, indent=4, ensure_ascii=False)
+
 
 with open("collocations.json", "w", encoding="utf-8") as write_file:
     json.dump(collocations, write_file, indent=4, ensure_ascii=False)
