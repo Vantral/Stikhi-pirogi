@@ -10,45 +10,65 @@ with open("dictionaries/syllabs.json", 'r', encoding="utf-8") as f:
     syllabs = json.load(f)
 
 
-def generate(word, amount):
-    def rhyme(candidate):           #filter function
-        if len(syllabs[word]) == 1 or len(syllabs[word]) == 0:
-            return True
+class Poem:
+    lines = [[], [], [], []]            #так в моём понимании выглядит четверостишие
 
-        elif candidate not in syllabs:
-            return False
+    first_word = random.choice(words)
+    line_count = 0                      #отслеживает на какой мы строчке четверостишия
 
-        elif syllabs[word][-1] == "V":
-            if len(syllabs[candidate]) == 1 or len(syllabs[candidate]) == 0:
+    def generate(self, word=first_word):
+        def rhyme(candidate):           #filter function
+            if len(syllabs[word]) == 1 or len(syllabs[word]) == 0:
                 return True
-            elif syllabs[candidate][1] == "'":
-                return True
-            else:
+
+            elif candidate not in syllabs:
                 return False
 
-        elif syllabs[word][-1] == "'":
-            if len(syllabs[candidate]) == 1 or len(syllabs[candidate]) == 0:
-                return True
-            elif syllabs[candidate][1] == "V":
-                return True
-            else:
-                return False
+            elif syllabs[word][-1] == "V":
+                if len(syllabs[candidate]) == 1 or len(syllabs[candidate]) == 0:
+                    return True
+                elif syllabs[candidate][1] == "'":
+                    return True
+                else:
+                    return False
 
-    candidates = [x for x in collocations[word]]
-    candidates = list(filter(rhyme, candidates))
+            elif syllabs[word][-1] == "'":
+                if len(syllabs[candidate]) == 1 or len(syllabs[candidate]) == 0:
+                    return True
+                elif syllabs[candidate][1] == "V":
+                    return True
+                else:
+                    return False
 
-    if len(candidates) == 0:
-        candidates = [x for x in collocations[word]]
+        candidates = [x for x in collocations[word]]        #список коллокатов слова
+        candidates = list(filter(rhyme, candidates))        #отфильстрованный по ударениям список коллокатов слова
 
-    freqs = [collocations[word][coll] for coll in candidates]
-    #print(freqs)
-    if sum(freqs) != 1:
-        freqs[random.randint(0, len(freqs)-1)] += 1 - sum(freqs)
-    new_word = np.random.choice(candidates, 1, p=freqs)[0]
-    print(word)
-    generate(new_word, amount)
+        if len(candidates) == 0:                            #если ни одно не подходит - возьмем любое
+            candidates = [x for x in collocations[word]]
+
+        freqs = [collocations[word][coll] for coll in candidates]       #массив с частотами коллокатов
+        
+        if sum(freqs) != 1:                                             #иногда возникает баг из-за округления в питоне и сумма != 1
+            freqs[random.randint(0, len(freqs)-1)] += 1 - sum(freqs)    #тогда прибавляем разницу рандомному слову
+
+        new_word = np.random.choice(candidates, 1, p=freqs)[0]
+
+        if len(self.lines[self.line_count]) == 5:                       #число 5 отвечает за количество слов в строке так что можно подбирать
+            self.line_count += 1
+            if self.line_count > 3:
+                return
+        
+        self.lines[self.line_count].append(word)
+        
+        self.generate(word=new_word)
+
+    def show(self):
+        for line in self.lines:
+            for word in line:
+                print(word, end=' ')
+            print('')
 
 
-test_word = random.choice(words)
-
-generate(test_word, 5)
+my_first_one = Poem()
+my_first_one.generate()
+my_first_one.show()
