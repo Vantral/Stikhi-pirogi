@@ -4,52 +4,56 @@ from russtress import Accent
 collocations = {}
 stresses = {}
 stikhi = []
+all_words = []
 vowels = "уеыаоэяиюё"
 
-accent = Accent()
+path2file = input("Enter path to file: ")
 
-with open("pirogi.txt", 'r', encoding="utf-8") as f:
-    stikhi = f.read().split('\n\n')
+with open(path2file, 'r', encoding="utf-8") as f:
+    text = f.read().replace(',.!?-;:()"[]', ' ').split()
 
 def syllabs(word):
+  accent = Accent()
   stressed_word = accent.put_stress(word)
-  res = ''
+
   for letter in stressed_word:
-    if letter == "'":
-      res += "'"
+    if letter not in vowels and letter != "'":
+      letter = ''
     elif letter in vowels:
-      res += "V"
+      letter = "V"
     else:
       continue
     
-  return res
+  return stressed_word
 
-for item in stikhi:
-    item = item.replace('\n', ' ').split()
-    for i in range(0, len(item)-1):
-        word = item[i]
-        next_word = item[i+1]
-        if word not in collocations:
-            collocations[word] = {}
+for i in range(0, len(text)-1):
+    word = text[i]
+    if word not in all_words:
+      all_words.append(word)
 
-        if next_word in collocations[word]:
-            collocations[word][next_word] += 1
-        else:
-            collocations[word][next_word] = 1
+    next_word = text[i+1]
+    if next_word not in all_words:
+      all_words.append(next_word)
 
-length = len(collocations)
+    if word not in collocations:
+        collocations[word] = {}
 
-for word in collocations:
+    if next_word in collocations[word]:
+        collocations[word][next_word] += 1
+    else:
+        collocations[word][next_word] = 1
+
+print("Words in")
+length = len(all_words)
+for word in all_words:
   stresses[word] = syllabs(word)
   length -= 1
   print(length)
 
-
-with open("syllabs.json", "w", encoding="utf-8") as write_file:
+with open('syllab/'.join(path2file.replace('.txt', '.json')), "w", encoding="utf-8") as write_file:
     json.dump(stresses, write_file, indent=4, ensure_ascii=False)
 
-
-with open("collocations.json", "w", encoding="utf-8") as write_file:
+with open('coll/'.join(path2file.replace('.txt', '.json')), "w", encoding="utf-8") as write_file:
     json.dump(collocations, write_file, indent=4, ensure_ascii=False)
 
 print("Done")
