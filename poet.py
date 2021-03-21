@@ -10,15 +10,16 @@ with open("dictionaries/syllabs.json", 'r', encoding="utf-8") as f:
     syllabs = json.load(f)
 
 
-count = [0]
-
 def generate(word, amount):
-    def rhyme(candidate):                                                       #filter function
+    def rhyme(candidate):           #filter function
         if len(syllabs[word]) == 1 or len(syllabs[word]) == 0:
             return True
 
+        elif candidate not in syllabs:
+            return False
+
         elif syllabs[word][-1] == "V":
-            if len(syllabs[candidate]) == 1:
+            if len(syllabs[candidate]) == 1 or len(syllabs[candidate]) == 0:
                 return True
             elif syllabs[candidate][1] == "'":
                 return True
@@ -26,7 +27,7 @@ def generate(word, amount):
                 return False
 
         elif syllabs[word][-1] == "'":
-            if len(syllabs[candidate]) == 1:
+            if len(syllabs[candidate]) == 1 or len(syllabs[candidate]) == 0:
                 return True
             elif syllabs[candidate][1] == "V":
                 return True
@@ -35,24 +36,18 @@ def generate(word, amount):
 
     candidates = [x for x in collocations[word]]
     candidates = list(filter(rhyme, candidates))
-    print(candidates)
 
-    if len(candidates) != 0:
-        freqs = [collocations[word][coll] for coll in candidates]
-        new_word = np.random.choice(candidates, 1, p=freqs)[0]
-        print(word)
-        generate(new_word, amount)
-
-    else:
+    if len(candidates) == 0:
         candidates = [x for x in collocations[word]]
-        freqs = [collocations[word][coll] for coll in candidates]
-        new_word = np.random.choice(candidates, 1, p=freqs)[0]
-        print(word)
-        generate(new_word, amount)
 
-    count[0] += 1
-    if count[0] > amount:
-        return
+    freqs = [collocations[word][coll] for coll in candidates]
+    #print(freqs)
+    if sum(freqs) != 1:
+        freqs[random.randint(0, len(freqs)-1)] += 1 - sum(freqs)
+    new_word = np.random.choice(candidates, 1, p=freqs)[0]
+    print(word)
+    generate(new_word, amount)
+
 
 test_word = random.choice(words)
 
