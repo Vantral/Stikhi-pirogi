@@ -64,14 +64,15 @@ class Poem:
         
         self.generate_random(word=new_word)
 
-    def generate_markov(self, model=''):                                #не работает на материале пирожков
+    def generate_markov(self, model=''):                                #нужно поэкспериментировать со входными данными
         with open(model, 'r', encoding="utf-8") as f:
             text = f.read().replace('\n\n', '.')
-        text_model = markovify.Text(text)
-        res = None
-        while res == None:
-            res = text_model.make_short_sentence(22)
-        print(res)
+        text_model = markovify.NewlineText(text)
+        for i in self.lines:
+          res = None
+          while res == None:
+              res = text_model.make_short_sentence(30)
+          i.append(res)
 
     def show(self):
         for line in self.lines:
@@ -81,8 +82,5 @@ class Poem:
 
 
 my_first_one = Poem()
-print("Random")
-my_first_one.generate_random()
+my_first_one.generate_markov('mark_pirogi.txt')
 my_first_one.show()
-print("Markov")
-my_first_one.generate_markov('pirogi.txt')
