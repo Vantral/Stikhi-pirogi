@@ -1,6 +1,7 @@
 import random
 import json
 import numpy as np
+import markovify
         
 with open("dictionaries/collocations_percents.json", 'r', encoding="utf-8") as f:
     collocations = json.load(f)
@@ -16,7 +17,7 @@ class Poem:
     first_word = random.choice(words)
     line_count = 0                      #отслеживает на какой мы строчке четверостишия
 
-    def generate(self, word=first_word):
+    def generate_random(self, word=first_word):
         def rhyme(candidate):           #filter function
             if len(syllabs[word]) == 1 or len(syllabs[word]) == 0:
                 return True
@@ -60,7 +61,23 @@ class Poem:
         
         self.lines[self.line_count].append(word)
         
-        self.generate(word=new_word)
+        self.generate_random(word=new_word)
+
+    def generate_markov(self, model=''):                                #нужно поэкспериментировать со входными данными
+        with open(model, 'r', encoding="utf-8") as f:
+            text = f.read().replace('\n\n', '.')
+        text_model = markovify.NewlineText(text)
+        def chunks(lst, n):
+            out = []
+            for i in range(0, len(lst), n):
+                out.append(lst[i:i + n])
+            return out
+
+        res = None
+        while res == None:
+            res = text_model.make_short_sentence(200)
+        res = res.split()
+        self.lines = chunks(res, 4)
 
     def show(self):
         for line in self.lines:
@@ -70,5 +87,5 @@ class Poem:
 
 
 my_first_one = Poem()
-my_first_one.generate()
+my_first_one.generate_markov('mark_pirogi.txt')
 my_first_one.show()
