@@ -1,7 +1,6 @@
 import random
 import json
 import numpy as np
-import time
 import markovify
         
 with open("dictionaries/collocations_percents.json", 'r', encoding="utf-8") as f:
@@ -11,11 +10,6 @@ with open("dictionaries/collocations_percents.json", 'r', encoding="utf-8") as f
 with open("dictionaries/syllabs.json", 'r', encoding="utf-8") as f:
     syllabs = json.load(f)
 
-def chunks(lst, n):
-    out = []
-    for i in range(0, len(lst), n):
-        out.append(lst[i:i + n])
-    return out
 
 class Poem:
     lines = [[], [], [], []]            #так в моём понимании выглядит четверостишие
@@ -73,6 +67,11 @@ class Poem:
         with open(model, 'r', encoding="utf-8") as f:
             text = f.read().replace('\n\n', '.')
         text_model = markovify.NewlineText(text)
+        def chunks(lst, n):
+            out = []
+            for i in range(0, len(lst), n):
+                out.append(lst[i:i + n])
+            return out
 
         res = None
         while res == None:
