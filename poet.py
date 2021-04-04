@@ -2,7 +2,7 @@ import random
 import json
 import numpy as np
 import markovify
-        
+
 with open("dictionaries/collocations_percents.json", 'r', encoding="utf-8") as f:
     collocations = json.load(f)
     words = [x for x in collocations]
@@ -12,13 +12,13 @@ with open("dictionaries/syllabs.json", 'r', encoding="utf-8") as f:
 
 
 class Poem:
-    lines = [[], [], [], []]            #так в моём понимании выглядит четверостишие
+    lines = [[], [], [], []]  # так в моём понимании выглядит четверостишие
 
     first_word = random.choice(words)
-    line_count = 0                      #отслеживает на какой мы строчке четверостишия
+    line_count = 0  # отслеживает на какой мы строчке четверостишия
 
     def generate_random(self, word=first_word):
-        def rhyme(candidate):           #filter function
+        def rhyme(candidate):  # filter function
             if len(syllabs[word]) == 1 or len(syllabs[word]) == 0:
                 return True
 
@@ -41,32 +41,34 @@ class Poem:
                 else:
                     return False
 
-        candidates = [x for x in collocations[word]]        #список коллокатов слова
-        candidates = list(filter(rhyme, candidates))        #отфильстрованный по ударениям список коллокатов слова
+        candidates = [x for x in collocations[word]]  # список коллокатов слова
+        candidates = list(filter(rhyme, candidates))  # отфильстрованный по ударениям список коллокатов слова
 
-        if len(candidates) == 0:                            #если ни одно не подходит - возьмем любое
+        if len(candidates) == 0:  # если ни одно не подходит - возьмем любое
             candidates = [x for x in collocations[word]]
 
-        freqs = [collocations[word][coll] for coll in candidates]       #массив с частотами коллокатов
-        
-        if sum(freqs) != 1:                                             #иногда возникает баг из-за округления в питоне и сумма != 1
-            freqs[random.randint(0, len(freqs)-1)] += 1 - sum(freqs)    #тогда прибавляем разницу рандомному слову
+        freqs = [collocations[word][coll] for coll in candidates]  # массив с частотами коллокатов
+
+        if sum(freqs) != 1:  # иногда возникает баг из-за округления в питоне и сумма != 1
+            freqs[random.randint(0, len(freqs) - 1)] += 1 - sum(freqs)  # тогда прибавляем разницу рандомному слову
 
         new_word = np.random.choice(candidates, 1, p=freqs)[0]
 
-        if len(self.lines[self.line_count]) == 5:                       #число 5 отвечает за количество слов в строке так что можно подбирать
+        if len(self.lines[
+                   self.line_count]) == 5:  # число 5 отвечает за количество слов в строке так что можно подбирать
             self.line_count += 1
             if self.line_count > 3:
                 return
-        
+
         self.lines[self.line_count].append(word)
-        
+
         self.generate_random(word=new_word)
 
-    def generate_markov(self, model=''):                                #нужно поэкспериментировать со входными данными
+    def generate_markov(self, model=''):  # нужно поэкспериментировать со входными данными
         with open(model, 'r', encoding="utf-8") as f:
             text = f.read().replace('\n\n', '.')
         text_model = markovify.NewlineText(text)
+
         def chunks(lst, n):
             out = []
             for i in range(0, len(lst), n):
@@ -74,10 +76,10 @@ class Poem:
             return out
 
         res = None
-        while res == None:
+        while res is None:
             res = text_model.make_short_sentence(200)
         res = res.split()
-        self.lines = chunks(res, 4)
+        self.lines = chunks(res, 5)
 
     def show(self):
         for line in self.lines:

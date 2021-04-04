@@ -2,6 +2,7 @@ from threading import Thread
 import time
 import requests
 from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
 
 """
 pages = []
@@ -10,13 +11,15 @@ while read != '':
     read = input("Enter URLs: ")
     pages.append(read)
 """
+ua = UserAgent()
+
 
 def parse(first, last):
-    
-    for page in range(first, last+1):
+    for page in range(first, last + 1):
+        header = {'User-Agent': str(ua.chrome)}
         URL = 'https://poetory.ru/pir/rating/'
         URL += str(page)
-        response = requests.get(URL)
+        response = requests.get(URL, headers=header)
         soup = BeautifulSoup(response.text, 'lxml')
         quotes = soup.find_all('div', class_="item-text")
 
@@ -26,6 +29,7 @@ def parse(first, last):
             stikh = str(item)
             stikh = stikh.lstrip('<div class="item-text">').rstrip('</div>')
             output_file.write(stikh + '\n\n')
+
 
 output_file_path = input("Path to output file: ")
 

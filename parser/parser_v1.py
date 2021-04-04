@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import time
+from fake_useragent import UserAgent
 
 """
 pages = []
@@ -16,21 +17,26 @@ output_file = open(output_file_path, 'w', encoding="utf-8")
 print("Loading started")
 
 start = time.time()
+ua = UserAgent()
 
-for page in range(1, 601):
-    URL = 'https://poetory.ru/pir/rating/'
+for page in range(1, 8704):
+    header = {'User-Agent': str(ua.chrome)}
+    print(header)
+    URL = 'https://stihi.ru/2021/04/04/'
     URL += str(page)
-    response = requests.get(URL)
+    response = requests.get(URL, headers=header)
     soup = BeautifulSoup(response.text, 'lxml')
     quotes = soup.find_all('div', class_="item-text")
 
     print("Page", str(page) + "...")
 
-    for item in quotes:
-        stikh = str(item)
-        stikh = stikh.lstrip('<div class="item-text">').rstrip('</div>')
-        output_file.write(stikh + '\n\n')
-    print(stikh)
+    try:
+        for item in quotes:
+            item.text = item.text.replace('<br>', '')
+            item.text = item.text.replace('"', '')
+            output_file.write(item.text + '\n\n')
+    except:
+        output_file.write(item.text + '\n\n')
     print("Done")
 
 print(time.time() - start)
