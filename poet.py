@@ -89,5 +89,5 @@ class Poem:
 
 
 my_first_one = Poem()
-my_first_one.generate_markov('mark_pirogi.txt')
+my_first_one.generate_markov('corporas/mark_pirogi.txt')
 my_first_one.show()
