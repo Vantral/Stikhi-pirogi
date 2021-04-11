@@ -1,5 +1,5 @@
 import json
-#from russtress import Accent
+from russtress import Accent
 
 collocations = {}
 stresses = {}
@@ -12,7 +12,7 @@ path2file = input("Enter path to file: ")
 with open(path2file, 'r', encoding="utf-8") as f:
     text = f.read().replace(',.!?-;:()"[]*1234567890', ' ').split()
 
-"""
+
 def syllabs(word):
   accent = Accent()
   stressed_word = accent.put_stress(word)
@@ -26,13 +26,13 @@ def syllabs(word):
       continue
     
   return stressed_word
-"""
 
 for i in range(0, len(text)-3):
     word = text[i] + ' ' + text[i+1]
     if word not in all_words:
       all_words.append(word)
-
+    print(len(text) - i)
+"""
     next_word = text[i+2] + ' ' + text[i+3]
     if next_word not in all_words:
       all_words.append(next_word)
@@ -46,10 +46,10 @@ for i in range(0, len(text)-3):
         collocations[word][next_word] = 1
 
     print(len(text) - i)
-
+"""
 print("Words in")
 
-"""
+
 length = len(all_words)
 for word in all_words:
   stresses[word] = syllabs(word)
@@ -57,11 +57,11 @@ for word in all_words:
   print(length)
 
 
-with open('syllab/'.join(path2file.replace('.txt', '_bigram.json')), "w", encoding="utf-8") as write_file:
+with open('dictionaries/syll_bigram.json', "w", encoding="utf-8") as write_file:
     json.dump(stresses, write_file, indent=4, ensure_ascii=False)
-"""
 
+"""
 with open('dictionaries/small_bigram_part2.json', "w", encoding="utf-8") as write_file:
     json.dump(collocations, write_file, indent=4, ensure_ascii=False)
-
+"""
 print("Done")

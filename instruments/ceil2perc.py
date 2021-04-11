@@ -1,6 +1,6 @@
 import json
 
-with open("dictionaries/collocations.json", 'r', encoding="utf-8") as f:
+with open("dictionaries\coll_bigram.json", 'r', encoding="utf-8") as f:
     collocations = json.load(f)
 
 for word in collocations:
@@ -11,7 +11,7 @@ for word in collocations:
     for coll in collocations[word]:
         collocations[word][coll] = collocations[word][coll] / summ
 
-with open("dictionaries/collocations_percents.json", "w", encoding="utf-8") as write_file:
+with open("dictionaries\coll_bigram_perc.json", "w", encoding="utf-8") as write_file:
     json.dump(collocations, write_file, indent=4, ensure_ascii=False)
 
 print("done")
