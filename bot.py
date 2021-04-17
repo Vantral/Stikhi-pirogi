@@ -10,15 +10,14 @@ poem = Poem()
 def start_message(message):
     bot.send_message(message.chat.id, 'Привет, я бот который пишет стихи пироги. Напиши /gen чтобы начать пользоваться')
 
-
 @bot.message_handler(commands=['gen'])
 def send_request(message):
     mark_up = telebot.types.InlineKeyboardMarkup()
     item = telebot.types.InlineKeyboardButton(text='Генерация по униграмме', callback_data='1')
     mark_up.add(item)
-    item = telebot.types.InlineKeyboardButton(text='Генерация по биграмме', callback_data='3')
+    item = telebot.types.InlineKeyboardButton(text='Генерация по биграмме', callback_data='2')
     mark_up.add(item)
-    item = telebot.types.InlineKeyboardButton(text='Генерация по маркову', callback_data='2')
+    item = telebot.types.InlineKeyboardButton(text='Генерация по маркову', callback_data='3')
     mark_up.add(item)
     bot.send_message(message.chat.id, 'Выбери генератор', reply_markup=mark_up)
 
@@ -35,6 +34,5 @@ def send_response(message):
     response = poem.show()
     bot.send_message(message.from_user.id, response)
     poem.clear()
-
 
 bot.polling(none_stop=True)

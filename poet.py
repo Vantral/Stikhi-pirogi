@@ -4,6 +4,10 @@ import numpy as np
 import markovify
 
 with open("dictionaries/coll_bigram_perc.json", 'r', encoding="utf-8") as f:
+    bi_collocations = json.load(f)
+    bi_words = [x for x in bi_collocations]
+
+with open("dictionaries/collocations_percents.json", 'r', encoding="utf-8") as f:
     collocations = json.load(f)
     words = [x for x in collocations]
 
@@ -18,6 +22,7 @@ class Poem:
     line_count = 0  # отслеживает на какой мы строчке четверостишия
 
     def generate_unigram(self, word=first_word):  # unigram generator
+        word = random.choice(words)
         def rhyme(candidate):  # filter function
             if len(syllabs[word]) == 1 or len(syllabs[word]) == 0:
                 return True
@@ -65,6 +70,7 @@ class Poem:
         self.generate_unigram(word=new_word)
 
     def generate_bigram(self, bigram=first_word):  # bigram generator
+        bigram = random.choice(bi_words)
         def rhyme(candidate):  # filter function
             curr_word = bigram.split()[1]
             candidate = candidate.split()[0]
@@ -90,13 +96,13 @@ class Poem:
                 else:
                     return False
 
-        candidates = [x for x in collocations[bigram]]  # список коллокатов слова
+        candidates = [x for x in bi_collocations[bigram]]  # список коллокатов слова
         candidates = list(filter(rhyme, candidates))  # отфильстрованный по ударениям список коллокатов слова
 
         if len(candidates) == 0:  # если ни одно не подходит - возьмем любое
-            candidates = [x for x in collocations[bigram]]
+            candidates = [x for x in bi_collocations[bigram]]
 
-        freqs = [collocations[bigram][coll] for coll in candidates]  # массив с частотами коллокатов
+        freqs = [bi_collocations[bigram][coll] for coll in candidates]  # массив с частотами коллокатов
 
         if sum(freqs) != 1:  # иногда возникает баг из-за округления в питоне и сумма != 1
             freqs[random.randint(0, len(freqs) - 1)] += 1 - sum(freqs)  # тогда прибавляем разницу рандомному слову
@@ -114,7 +120,7 @@ class Poem:
 
         self.generate_bigram(bigram=new_bigram)
 
-    def generate_markov(self, model=''):  # markov generator
+    def generate_markov(self, model='corporas\mark_pirogi.txt'):  # markov generator
         with open(model, 'r', encoding="utf-8") as f:
             text = f.read().replace('\n\n', '.')
         text_model = markovify.NewlineText(text)
