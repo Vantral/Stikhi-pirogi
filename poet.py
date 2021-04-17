@@ -17,7 +17,7 @@ class Poem:
     first_word = random.choice(words)
     line_count = 0  # отслеживает на какой мы строчке четверостишия
 
-    def generate_random(self, word=first_word):                     #unigram generator
+    def generate_unigram(self, word=first_word):  # unigram generator
         def rhyme(candidate):  # filter function
             if len(syllabs[word]) == 1 or len(syllabs[word]) == 0:
                 return True
@@ -54,16 +54,17 @@ class Poem:
 
         new_word = np.random.choice(candidates, 1, p=freqs)[0]
 
-        if len(self.lines[self.line_count]) == 5:  # число 5 отвечает за количество слов в строке так что можно подбирать
+        if len(self.lines[
+                   self.line_count]) == 5:  # число 5 отвечает за количество слов в строке так что можно подбирать
             self.line_count += 1
             if self.line_count > 3:
                 return
 
         self.lines[self.line_count].append(word)
 
-        self.generate_random(word=new_word)
+        self.generate_unigram(word=new_word)
 
-    def generate_bigram(self, bigram=first_word):                     #bigram generator
+    def generate_bigram(self, bigram=first_word):  # bigram generator
         def rhyme(candidate):  # filter function
             curr_word = bigram.split()[1]
             candidate = candidate.split()[0]
@@ -100,9 +101,11 @@ class Poem:
         if sum(freqs) != 1:  # иногда возникает баг из-за округления в питоне и сумма != 1
             freqs[random.randint(0, len(freqs) - 1)] += 1 - sum(freqs)  # тогда прибавляем разницу рандомному слову
 
-        new_bigram = np.random.choice(candidates, 1, p=freqs)[0]    #эта функция выбирает следующую биграму в соответствии с её частотой
+        new_bigram = np.random.choice(candidates, 1, p=freqs)[
+            0]  # эта функция выбирает следующую биграму в соответствии с её частотой
 
-        if len(self.lines[self.line_count]) == 2:  # число 5 отвечает за количество слов в строке так что можно подбирать
+        if len(self.lines[
+                   self.line_count]) == 2:  # число 5 отвечает за количество слов в строке так что можно подбирать
             self.line_count += 1
             if self.line_count > 3:
                 return
@@ -111,7 +114,7 @@ class Poem:
 
         self.generate_bigram(bigram=new_bigram)
 
-    def generate_markov(self, model=''):                            #markov generator
+    def generate_markov(self, model=''):  # markov generator
         with open(model, 'r', encoding="utf-8") as f:
             text = f.read().replace('\n\n', '.')
         text_model = markovify.NewlineText(text)
@@ -128,13 +131,14 @@ class Poem:
         res = res.split()
         self.lines = chunks(res, 5)
 
-    def show(self):                                                 #func that returns generated thing
+    def show(self):  # func that returns generated thing
+        response = ''
         for line in self.lines:
             for word in line:
-                print(word, end=' ')
-            print('')
+                response += word + ' '
+            response += '\n'
+        return response
 
-
-my_first_one = Poem()
-my_first_one.generate_bigram()
-my_first_one.show()
+    def clear(self):
+        self.lines = [[], [], [], []]
+        self.line_count = 0
