@@ -3,6 +3,10 @@ import json
 import numpy as np
 import markovify
 
+with open('corporas\mark_pirogi.txt', 'r', encoding="utf-8") as f:
+    text = f.read().replace('\n\n', '.')
+    text_model = markovify.NewlineText(text)
+
 with open("dictionaries/coll_bigram_perc.json", 'r', encoding="utf-8") as f:
     bi_collocations = json.load(f)
     bi_words = [x for x in bi_collocations]
@@ -107,8 +111,7 @@ class Poem:
         if sum(freqs) != 1:  # иногда возникает баг из-за округления в питоне и сумма != 1
             freqs[random.randint(0, len(freqs) - 1)] += 1 - sum(freqs)  # тогда прибавляем разницу рандомному слову
 
-        new_bigram = np.random.choice(candidates, 1, p=freqs)[
-            0]  # эта функция выбирает следующую биграму в соответствии с её частотой
+        new_bigram = np.random.choice(candidates, 1, p=freqs)[0]  # эта функция выбирает следующую биграму в соответствии с её частотой
 
         if len(self.lines[
                    self.line_count]) == 2:  # число 5 отвечает за количество слов в строке так что можно подбирать
@@ -120,11 +123,7 @@ class Poem:
 
         self.generate_bigram(bigram=new_bigram)
 
-    def generate_markov(self, model='corporas\mark_pirogi.txt'):  # markov generator
-        with open(model, 'r', encoding="utf-8") as f:
-            text = f.read().replace('\n\n', '.')
-        text_model = markovify.NewlineText(text)
-
+    def generate_markov(self, model=text_model):  # markov generator
         def chunks(lst, n):
             out = []
             for i in range(0, len(lst), n):
