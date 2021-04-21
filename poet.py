@@ -113,8 +113,7 @@ class Poem:
 
         new_bigram = np.random.choice(candidates, 1, p=freqs)[0]  # эта функция выбирает следующую биграму в соответствии с её частотой
 
-        if len(self.lines[
-                   self.line_count]) == 2:  # число 5 отвечает за количество слов в строке так что можно подбирать
+        if len(self.lines[self.line_count]) == 2:  # число 5 отвечает за количество слов в строке так что можно подбирать
             self.line_count += 1
             if self.line_count > 3:
                 return
