@@ -1,6 +1,6 @@
 import telebot
 from poet import Poem
-from bot_token import TOKEN
+from bot_token import TOKEN     #put your token into bot_token.py
 
 bot = telebot.TeleBot(TOKEN)
 poem = Poem()
