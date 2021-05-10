@@ -18,15 +18,17 @@ with open("dictionaries/collocations_percents.json", 'r', encoding="utf-8") as f
 with open("dictionaries/syllabs.json", 'r', encoding="utf-8") as f:
     syllabs = json.load(f)
 
+with open("dictionaries/first_words_perc.json", 'r', encoding="utf-8") as f:
+    first_words = json.load(f)
 
 class Poem:
     lines = [[], [], [], []]  # так в моём понимании выглядит четверостишие
 
-    first_word = random.choice(words)
+    first_word = np.random.choice([x for x in first_words.keys()], 1, [x for x in first_words.values()])[0]
     line_count = 0  # отслеживает на какой мы строчке четверостишия
 
-    def generate_unigram(self, word=first_word):  # unigram generator
-        word = random.choice(words)
+    def generate_unigram(self, word=np.random.choice([x for x in first_words.keys()], 1, [x for x in first_words.values()])[0]):  # unigram generator
+        #word = random.choice(words)
         def rhyme(candidate):  # filter function
             if len(syllabs[word]) == 1 or len(syllabs[word]) == 0:
                 return True
@@ -147,3 +149,4 @@ class Poem:
     def clear(self):
         self.lines = [[], [], [], []]
         self.line_count = 0
+        self.first_word = np.random.choice([x for x in first_words.keys()], 1, [x for x in first_words.values()])[0]
