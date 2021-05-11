@@ -14,7 +14,7 @@ length = len(stikhi)
 
 for poem in stikhi:
     try:
-        pair = (poem.split()[0], poem.split()[-1])
+        pair = (poem.split()[0]+' '+poem.split()[1], poem.split()[-2]+' '+poem.split()[-1])
         if pair[0] in first_words:
             first_words[pair[0]] += 1
         else:
@@ -29,8 +29,8 @@ for poem in stikhi:
     length -= 1
     print(f"{length} last")
 
-with open('dictionaries/first_words.json', "w", encoding="utf-8") as write_file:
+with open('dictionaries/first_bigrams.json', "w", encoding="utf-8") as write_file:
     json.dump(first_words, write_file, indent=4, ensure_ascii=False)
 
-with open('dictionaries/last_words.json', "w", encoding="utf-8") as write_file:
+with open('dictionaries/last_bigrams.json', "w", encoding="utf-8") as write_file:
     json.dump(last_words, write_file, indent=4, ensure_ascii=False)
