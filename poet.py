@@ -18,6 +18,12 @@ with open("dictionaries/collocations_percents.json", 'r', encoding="utf-8") as f
 with open("dictionaries/syllabs.json", 'r', encoding="utf-8") as f:
     syllabs = json.load(f)
 
+with open("dictionaries/last_words_perc.json", 'r', encoding="utf-8") as f:
+    last_words = json.load(f)
+
+with open("dictionaries/last_bigrams_perc.json", 'r', encoding="utf-8") as f:
+    last_bigrams = json.load(f)
+
 
 class Poem:
     lines = [[], [], [], []]  # так в моём понимании выглядит четверостишие

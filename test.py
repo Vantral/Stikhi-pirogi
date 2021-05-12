@@ -1,8 +1,28 @@
+import time
 import json
-import numpy as np
+from threading import Thread
 
-with open("dictionaries/first_words_perc.json", 'r', encoding="utf-8") as f:
-    first_words = json.load(f)
+start_time = time.perf_counter()
 
-for i in range(20):
-    print(np.random.choice([x for x in first_words.keys()], 1, [x for x in first_words.values()])[0])
+def subscribe(id, period):
+    subscribers_file = open("dictionaries/subscribers.json", 'r', encoding="utf-8")
+    subscribers_dict = json.load(subscribers_file)
+    subscribers_dict[id] = period
+    subscribers_file.close()
+    subscribers_file = open("dictionaries/subscribers.json", 'w', encoding="utf-8")
+    json.dump(subscribers_dict, subscribers_file, indent=4, ensure_ascii=False)
+    subscribers_file.close()
+
+def knock():
+    print(f"Knock-knock!")
+
+def timer(func, minutes=1):
+    while True:
+        time.sleep(minutes*30)
+        func()
+
+th_timer = Thread(target=timer, args=(knock, 1))
+th_timer.start()
+while True:
+    a, b = input().split()
+    subscribe(a, b)
