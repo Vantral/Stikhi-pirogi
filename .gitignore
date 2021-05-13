@@ -19107,3 +19107,4 @@ venv/Scripts/tqdm.exe
 .vscode/settings.json
 __pycache__/bot_token.cpython-38.pyc
 __pycache__/poet.cpython-38.pyc
+dictionaries/subscribers.json
