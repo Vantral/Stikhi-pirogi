@@ -3,12 +3,14 @@ from poet import Poem
 import numpy as np
 import json
 import time
+import instruments.db_operator as db
 from threading import Thread
 from bot_token import TOKEN     #put your token into bot_token.py
 
 bot = telebot.TeleBot(TOKEN)
 poem = Poem()
 periodical_poem = Poem()
+db.__init__()
 
 with open("dictionaries/first_words_perc.json", 'r', encoding="utf-8") as f:
     first_words = json.load(f)
@@ -36,11 +38,8 @@ def send_post(minutes=60):
 
         subs_message = f"/Униграмма/\nWIP\n\n/Биграмма/\n{bi}\n\n/Марков/\n{mark}"
 
-        with open("dictionaries/subscribers.json", 'r', encoding="utf-8") as f:
-            subscribers = json.load(f)
-            for id in subscribers:
-                if subscribers[id]:
-                    bot.send_message(id, subs_message)
+        for each in db.get_list():
+            bot.send_message(each, subs_message)
 
 
 @bot.message_handler(commands=['start'])
@@ -51,24 +50,12 @@ def start_message(message):
 @bot.message_handler(commands=['sub'])
 def subscribe(message):
     id = message.chat.id
-    subscribers_file = open("dictionaries/subscribers.json", 'r', encoding="utf-8")
-    subscribers_dict = json.load(subscribers_file)
-    subscribers_dict[id] = True
-    subscribers_file.close()
-    subscribers_file = open("dictionaries/subscribers.json", 'w', encoding="utf-8")
-    json.dump(subscribers_dict, subscribers_file, indent=4, ensure_ascii=False)
-    subscribers_file.close()
+    db.subscribe(id)
 
 @bot.message_handler(commands=['unsub'])
 def unsubscribe(message):
     id = message.chat.id
-    subscribers_file = open("dictionaries/subscribers.json", 'r', encoding="utf-8")
-    subscribers_dict = json.load(subscribers_file)
-    subscribers_dict[id] = False
-    subscribers_file.close()
-    subscribers_file = open("dictionaries/subscribers.json", 'w', encoding="utf-8")
-    json.dump(subscribers_dict, subscribers_file, indent=4, ensure_ascii=False)
-    subscribers_file.close()
+    db.unsubscribe(id)
     
 
 @bot.message_handler(commands=['gen'])

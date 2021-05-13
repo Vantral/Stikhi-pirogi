@@ -19104,3 +19104,6 @@ venv/Lib/site-packages/unidecode/__pycache__/x004.cpython-39.pyc
 venv/Lib/site-packages/unidecode/__pycache__/x020.cpython-39.pyc
 venv/Scripts/nltk.exe
 venv/Scripts/tqdm.exe
+.vscode/settings.json
+__pycache__/bot_token.cpython-38.pyc
+__pycache__/poet.cpython-38.pyc
