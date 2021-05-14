@@ -19,9 +19,9 @@ with open("dictionaries/first_bigrams_perc.json", 'r', encoding="utf-8") as f:
     first_bigrams = json.load(f)
 
 
-def send_post(minutes=60):
+def send_post(minutes=1):
     while True:
-        time.sleep(minutes*60)
+        time.sleep(minutes*20)
         """
         periodical_poem.generate_token("unigram", np.random.choice([x for x in first_words.keys()], 1, [x for x in first_words.values()])[0])
         uni = periodical_poem.show()
