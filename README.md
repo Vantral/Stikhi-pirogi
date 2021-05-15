@@ -53,6 +53,7 @@ clear() #возвращает внутренние переменные клас
 <img src="rhyme func diagram.svg">
 
 <h1>Бот</h1>
+@stishki_pirozhki_bot
 Пожалуй единственное интересное замечание про бота это функция подписки, которая реализована в instruments/db_operator.py
 
 ```python
