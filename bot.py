@@ -22,21 +22,20 @@ with open("dictionaries/first_bigrams_perc.json", 'r', encoding="utf-8") as f:
 def send_post(minutes=1):
     while True:
         time.sleep(minutes*20)
-        """
+
         periodical_poem.generate_token("unigram", np.random.choice([x for x in first_words.keys()], 1, [x for x in first_words.values()])[0])
         uni = periodical_poem.show()
         periodical_poem.clear()
-        """
-        
+
         periodical_poem.generate_token("bigram", np.random.choice([x for x in first_bigrams.keys()], 1, [x for x in first_bigrams.values()])[0])
         bi = periodical_poem.show()
         periodical_poem.clear()
-        
+
         periodical_poem.generate_markov()
         mark = periodical_poem.show()
         periodical_poem.clear()
 
-        subs_message = f"/Униграмма/\nWIP\n\n/Биграмма/\n{bi}\n\n/Марков/\n{mark}"
+        subs_message = f"/Униграмма/\n{uni}\n\n/Биграмма/\n{bi}\n\n/Марков/\n{mark}"
 
         for each in db.get_list():
             bot.send_message(each, subs_message)
@@ -51,11 +50,13 @@ def start_message(message):
 def subscribe(message):
     id = message.chat.id
     db.subscribe(id)
+    bot.send_message(message.chat.id, "Вы подписались на ежечасную рассылку")
 
 @bot.message_handler(commands=['unsub'])
 def unsubscribe(message):
     id = message.chat.id
     db.unsubscribe(id)
+    bot.send_message(message.chat.id, "Вы отписались от рассылки")
     
 
 @bot.message_handler(commands=['gen'])
@@ -73,8 +74,7 @@ def send_request(message):
 @bot.callback_query_handler(func=None)
 def send_response(message):
     if message.data == '1':
-        pass
-        #poem.generate_token("unigram", np.random.choice([x for x in first_words.keys()], 1, [x for x in first_words.values()])[0])
+        poem.generate_token("unigram", np.random.choice([x for x in first_words.keys()], 1, [x for x in first_words.values()])[0])
     elif message.data == '2':
         poem.generate_token("bigram", np.random.choice([x for x in first_bigrams.keys()], 1, [x for x in first_bigrams.values()])[0])
     elif message.data == '3':

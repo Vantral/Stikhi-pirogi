@@ -32,8 +32,12 @@ class Poem:
     def generate_token(self, ngram, token):
         if ngram == "bigram":
             coll_dict = bi_collocations
+            tokens_per_line = 2
+            last_token = np.random.choice([x for x in last_bigrams.keys()], 1, [x for x in last_bigrams.values()])[0]
         elif ngram == "unigram":
             coll_dict = collocations
+            tokens_per_line = 4
+            last_token = np.random.choice([x for x in last_words.keys()], 1, [x for x in last_words.values()])[0]
 
         def rhyme(candidate):  # filter function
             if ngram == "bigram":
@@ -78,9 +82,10 @@ class Poem:
         new_token = np.random.choice(candidates, 1, p=freqs)[0]
 
 
-        if len(self.lines[self.line_count]) == 4:  # число 5 отвечает за количество слов в строке так что можно подбирать
+        if len(self.lines[self.line_count]) == tokens_per_line:  # число 5 отвечает за количество слов в строке так что можно подбирать
             self.line_count += 1
-            if self.line_count > 3:
+            if self.line_count > 2:
+                self.lines[self.line_count].append(last_token)
                 return
 
         self.lines[self.line_count].append(token)

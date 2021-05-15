@@ -9,7 +9,10 @@ def __init__():
 def subscribe(id):
     with sql.connect('subscribers.db') as con:
         cur = con.cursor()
-        cur.execute(f"INSERT INTO `subscribers` (id) VALUES ({id})")
+        try:
+            cur.execute(f"INSERT INTO `subscribers` (id) VALUES ({id})")
+        except sql.IntegrityError:
+            pass
         con.commit()
         cur.close()
 
